@@ -1,6 +1,6 @@
 #include "TrueNum.h"
 
-
+//test
 int TrueNum::delayTime = 8000;
 
 TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID){
