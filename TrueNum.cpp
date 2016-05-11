@@ -15,17 +15,28 @@ boolean TrueNum::getReturnBool(){
 
 void TrueNum::getQuery(Client& inclient){
  int a = -1; int x = 0; boolean spec = false;
-  if (inclient.connect(baseUrl, 80)){
-    
+  if (inclient.connect(baseUrl, 80)){   
+   
+   #ifdef __AVR__
     inclient.print(F("GET "));  
     inclient.print(F("/Numberflow/API?auth="));
     inclient.print(user); 
-    inclient.print(":"); 
+    inclient.print(F(":")); 
     inclient.print(pwd); 
     inclient.print(F("&ns=")); 
     inclient.print(numSpace); 
     inclient.print(F("&sto=1&string=notags&cmd=dashboard-search&qry=parameter:"));
-    inclient.print(ID);
+    inclient.print(ID);  
+   #else 
+    inclient.print(urlleadin);  
+    inclient.print(user); 
+    inclient.print(":"); 
+    inclient.print(pwd); 
+    inclient.print(nsparam); 
+    inclient.print(numSpace); 
+    inclient.print(queryParams);
+    inclient.print(ID); 
+   #endif 
     inclient.println(); 
     delay(500); 
   }else {
@@ -102,10 +113,16 @@ void TrueNum::callUrl(char* statement, Client& inclient){
     replaceChar(statement, '%', "%25");
     replaceChar(statement, ' ', "+");
  
+    #ifdef __AVR__
     Serial.println(F("calling:")); 
+    #else
+    Serial.println("calling:"); 
+    #endif
     Serial.println(statement); 
     
  if (inclient.connect(baseUrl, 80)){ 
+
+  #ifdef __AVR__
     inclient.print(F("GET "));  
     inclient.print(F("/Numberflow/API?auth=")); 
     inclient.print(user); 
@@ -115,7 +132,17 @@ void TrueNum::callUrl(char* statement, Client& inclient){
     inclient.print(numSpace); 
     inclient.print(F("&sto=1&cmd=send-tspeak&tspeak=")); 
     inclient.print(statement);
-    inclient.println(); 
+  #else
+    inclient.print(urlleadin);  
+    inclient.print(user); 
+    inclient.print(":"); 
+    inclient.print(pwd); 
+    inclient.print(nsparam); 
+    inclient.print(numSpace); 
+    inclient.print(callParams); 
+    inclient.print(statement);
+  #endif
+    inclient.println();
     delay(500);
   } else {
     Serial.println("connection failed");
@@ -131,6 +158,7 @@ void TrueNum::callUrl(char* statement, Client& inclient){
 void TrueNum::callUniBox(Client& inclient){
    //tokens used, report interval
 if (inclient.connect(baseUrl, 80)){ 
+  #ifdef __AVR__
     inclient.print(F("GET "));  
     inclient.print(F("/Numberflow/API?auth=")); 
     inclient.print(user); 
@@ -143,14 +171,29 @@ if (inclient.connect(baseUrl, 80)){
     inclient.print(ID);
     inclient.print(F("+=+%22note%22//"));
     inclient.print(F("Tokens:+"));
-
+ #else
+    inclient.print(urlleadin);  
+    inclient.print(user); 
+    inclient.print(":"); 
+    inclient.print(pwd); 
+    inclient.print(nsparam); 
+    inclient.print(numSpace);
+    inclient.print(uniParams);
+    inclient.print(ID);
+    inclient.print(uniParams2);
+ #endif
+  
   for(uint8_t i = 0; i < num; i++){
     if(nodes[i].token != NULL){
     inclient.print(nodes[i].token);
     inclient.print('+');
       }
-    }   
+    }
+  #ifdef __AVR__     
+    inclient.print(F("+Interval:+"));
+  #else
     inclient.print("+Interval:+");
+  #endif
     float ds = delayTime / 1000;
     inclient.print(ds);   
     inclient.println(); 
@@ -262,8 +305,11 @@ void TrueNum::doSpecialNum(char* in, Client& inClient){
     
     if(state == 1){  
      if( strcmp(in, statusreq) != 0){
-      
+     #ifdef __AVR__ 
       Serial.println(F("\nsending status report...\n"));
+     #else
+     Serial.println("\nsending status report...\n");
+     #endif
       callUniBox(inClient);
       memcpy(statusreq, in, len);
       

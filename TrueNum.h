@@ -12,6 +12,15 @@ TrueNum(String user, String pwd, String numSpace);
 TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID);
 void getConditionalStmt(char* in);
 
+#ifndef __AVR__
+   const char* leadin = "GET /Numberflow/API?auth=";
+   const char* nsparam = "&ns=";
+   const char* queryParams = "&sto=1&string=notags&cmd=dashboard-search&qry=parameter:"; 
+   const char* callParams = "&sto=1&cmd=send-tspeak&tspeak="; 
+   const char* uniParams = "&sto=1&cmd=enter-unibox&ubox=status-report+of+";
+   const char* uniParams2 = "+=+%22note%22//Tokens:+";
+#endif
+
 void getQuery(Client& inclient);
 void makeCall(Client& inClient);
 void callUniBox(Client& inclient);
