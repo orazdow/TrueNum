@@ -13,7 +13,7 @@ TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID);
 void getConditionalStmt(char* in);
 
 #ifndef __AVR__
-   const char* leadin = "GET /Numberflow/API?auth=";
+   const char* urlleadin = "GET /Numberflow/API?auth=";
    const char* nsparam = "&ns=";
    const char* queryParams = "&sto=1&string=notags&cmd=dashboard-search&qry=parameter:"; 
    const char* callParams = "&sto=1&cmd=send-tspeak&tspeak="; 
