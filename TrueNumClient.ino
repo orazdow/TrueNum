@@ -43,8 +43,9 @@ void loop() {
 myNum.setVal("$DHT-temp", mySensor.getTemperature());
 myNum.setVal("$thing1f", mySensor.getHumidity());
 
-myNum.getQuery(client);
-myNum.makeCall(client);
+//myNum.getQuery(client);
+//myNum.makeCall(client);
+myNum.makeCall( "temperature of myArduino = 777 F", client );
 
 if(myNum.getReturnBool()){
   digitalWrite(13,HIGH);

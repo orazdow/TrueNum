@@ -227,6 +227,27 @@ void TrueNum::makeCall(Client& inClient){
         delay(delayTime);
 }
 
+void TrueNum::makeCall(const char* in, Client& inClient){
+
+     char* statement = (char*) in; 
+
+     if(statement[0] != 0){
+
+        if(getCondition(statement) == 0)
+        {            
+          replaceToken( statement, getVal(getToken(statement)) );    
+        } 
+        else{
+            getConditionalStmt(statement);         
+        }
+        if(statement[0] != 0)
+        {
+          callUrl(statement, inClient);         
+        } 
+       }  
+        delay(delayTime);       
+}
+
 void TrueNum::getConditionalStmt(char* in){
 
     uint8_t state = getCondition(in);

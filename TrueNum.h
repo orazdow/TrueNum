@@ -23,6 +23,7 @@ void getConditionalStmt(char* in);
 
 void getQuery(Client& inclient);
 void makeCall(Client& inClient);
+void makeCall(const char* in, Client& inClient);
 void callUniBox(Client& inclient);
 
 void setVal(const char* intoken, float invalue);
