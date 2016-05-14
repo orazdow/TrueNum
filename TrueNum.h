@@ -17,7 +17,7 @@ void makeCall(Client& inClient);
 void makeCall(const char* in, Client& inClient);
 void setVal(const char* intoken, float invalue);
 boolean getReturnBool();
-
+float getVal(const char* intoken);
 private:
 
 #ifdef __AVR__
@@ -62,7 +62,6 @@ uint8_t getCondition(char* in);
 void getConditionalStmt(char* in);
 uint8_t checkSpecialNum(char* in);
 void doSpecialNum(char* in, Client& inClient);
-float getVal(const char* intoken);
 char* getToken(char* in);
 float getTarget(char* in);
 void replaceToken(char* in, float val);

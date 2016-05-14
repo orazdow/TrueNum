@@ -239,20 +239,21 @@ void TrueNum::makeCall(Client& inClient){
 
 void TrueNum::makeCall(const char* in, Client& inClient){
 
-     char* statement = (char*) in; 
+     static char callBuff[len];
+     memcpy(callBuff, in, len);
 
-     if(statement[0] != 0){
+     if(callBuff[0] != 0){
 
-        if(getCondition(statement) == 0)
+        if(getCondition(callBuff) == 0)
         {            
-          replaceToken( statement, getVal(getToken(statement)) );    
+          replaceToken( callBuff, getVal(getToken(callBuff)) );    
         } 
         else{
-            getConditionalStmt(statement);         
+            getConditionalStmt(callBuff);         
         }
-        if(statement[0] != 0)
+        if(callBuff[0] != 0)
         {
-          callUrl(statement, inClient);         
+          callUrl(callBuff, inClient);         
         } 
        }  
         delay(delayTime);       
