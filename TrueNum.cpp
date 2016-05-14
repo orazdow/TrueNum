@@ -9,6 +9,16 @@ TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace,const cha
     this->ID = ID;
 }
 
+TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace){
+    this->user = user;
+    this->pwd = pwd;
+    this->numSpace = numSpace;
+}
+
+void TrueNum::setID(const char* ID){
+    this->ID = ID;
+}
+
 boolean TrueNum::getReturnBool(){
   return rtnbool;
 }
