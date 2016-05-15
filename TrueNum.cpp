@@ -62,7 +62,7 @@ void TrueNum::getQuery(Client& inclient){
      spec = false;
      if(checkSpecialNum(temps[a]))
       { 
-      doSpecialNum(temps[a], inclient);  
+      doSpecialNum(temps[a]);  
       spec = true; 
       temps[a][0] = 0; 
       }
@@ -93,24 +93,24 @@ void TrueNum::getQuery(Client& inclient){
       x++; 
      } 
 
-  }  
-      if(unitrig){
-      callUniBox(inclient);
-      unitrig = false; }
-  
+  }       
       //remove json info from first num
       if(strstr(temps[0], "truenumbers:")) 
       memmove(temps[0],temps[0]+12,len-12);
 
       //handle if first slot is special num
       if( checkSpecialNum(temps[a])){
-        doSpecialNum(temps[a], inclient); 
-        temps[a][0] = 0; 
-        }
+        doSpecialNum(temps[a]); 
+        temps[a][0] = 0;}
 
       //null remaining entries
       for(uint8_t i = a+1; i < num; i++)
        temps[i][0] = 0; 
+
+      //call unibox
+      if(unitrig){
+      callUniBox(inclient);
+      unitrig = false;}
 
       //print queried nums
       Serial.println(); 
@@ -337,7 +337,7 @@ uint8_t TrueNum::checkSpecialNum(char* in){
   return rtn;
 }
 
-void TrueNum::doSpecialNum(char* in, Client& inClient){
+void TrueNum::doSpecialNum(char* in){
   
     uint8_t state = checkSpecialNum(in);
     

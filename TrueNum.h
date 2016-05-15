@@ -63,7 +63,7 @@ void callUrl(char* statement, Client& inclient);
 uint8_t getCondition(char* in);
 void getConditionalStmt(char* in);
 uint8_t checkSpecialNum(char* in);
-void doSpecialNum(char* in, Client& inClient);
+void doSpecialNum(char* in);
 char* getToken(char* in);
 float getTarget(char* in);
 void replaceToken(char* in, float val);
