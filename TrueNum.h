@@ -39,14 +39,14 @@ struct Node
   };  
 Node nodes[num];
 
+char statusreq[len];
 const char* user;
 const char* pwd; 
 const char* numSpace; 
-static int delayTime; //change from static?
-const char* baseUrl  = "pub.truenumbers.com";
-boolean unitrig = false;
 const char* ID;
-char statusreq[len];
+const char* baseUrl  = "pub.truenumbers.com";
+static int delayTime; 
+boolean unitrig = false;
 boolean rtnbool;
 
 #ifndef __AVR__
