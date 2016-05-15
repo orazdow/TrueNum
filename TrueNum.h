@@ -18,7 +18,8 @@ void makeCall(const char* in, Client& inClient);
 void setVal(const char* intoken, float invalue);
 boolean getReturnBool();
 float getVal(const char* intoken);
-private:
+
+//private:
 
 #ifdef __AVR__
 static const uint8_t num = 4; //makes big mem diff... 
@@ -43,6 +44,7 @@ const char* pwd;
 const char* numSpace; 
 static int delayTime; //change from static?
 const char* baseUrl  = "pub.truenumbers.com";
+boolean unitrig = false;
 const char* ID;
 char statusreq[len];
 boolean rtnbool;

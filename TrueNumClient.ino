@@ -33,6 +33,9 @@ myNum.getQuery(client);
 //myNum.makeCall(client);
 myNum.getQuery(client);
 //myNum.makeCall(client); */
+myNum.getQuery(client);
+//myNum.getQuery(client);
+
 }
 
 void loop() {
@@ -42,10 +45,10 @@ void loop() {
 
 myNum.setVal("$DHT-temp", mySensor.getTemperature());
 myNum.setVal("$thing1f", mySensor.getHumidity());
-
-myNum.getQuery(client);
+Serial.println(myNum.getVal("$DHT-temp"));
+//myNum.getQuery(client);
 myNum.makeCall(client);
-//Serial.println(myNum.getVal("$DHT-temp"));
+
 //myNum.makeCall( "temperature of myArduino = $DHT-temp < 70 F", client );
 
 if(myNum.getReturnBool()){

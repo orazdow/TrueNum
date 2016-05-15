@@ -1,6 +1,7 @@
 #include "TrueNum.h"
 
 int TrueNum::delayTime = 8000;
+//boolean TrueNum::unitrig = false;
 
 TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID){
     this->user = user;
@@ -70,7 +71,7 @@ void TrueNum::getQuery(Client& inclient){
 
       if(a < num-1){  
       if(!spec){
-      a++;
+      a++; 
       }
       }else{
          Serial.println("\nlimit reached"); break;
@@ -91,9 +92,13 @@ void TrueNum::getQuery(Client& inclient){
       temps[a][x] = c; 
       if(x < len-1)
       x++; 
-     }
+     } 
 
   }  
+      if(unitrig){
+      callUniBox(inclient);
+      unitrig = false; }
+  
       //remove json info from first num
       if(strstr(temps[0], "truenumbers:")) 
       memmove(temps[0],temps[0]+12,len-12);
@@ -165,7 +170,7 @@ void TrueNum::callUrl(char* statement, Client& inclient){
   
 }
 
-void TrueNum::callUniBox(Client& inclient){
+void TrueNum::callUniBox(Client& inclient){ 
    //tokens used, report interval
 if (inclient.connect(baseUrl, 80)){ 
   #ifdef __AVR__
@@ -213,7 +218,7 @@ if (inclient.connect(baseUrl, 80)){
     Serial.println("connection failed");
   } 
     //flush serial buffer
-    while(inclient.available()) { inclient.read(); }
+    while(inclient.available()) { inclient.read(); } 
 }
 
 void TrueNum::makeCall(Client& inClient){
@@ -342,7 +347,7 @@ void TrueNum::doSpecialNum(char* in, Client& inClient){
      #else
      Serial.println("\nsending status report...\n");
      #endif
-      callUniBox(inClient);
+      unitrig = true;
       memcpy(statusreq, in, len);
       
        }   
