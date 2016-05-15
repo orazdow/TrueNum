@@ -19,7 +19,7 @@ void setVal(const char* intoken, float invalue);
 boolean getReturnBool();
 float getVal(const char* intoken);
 
-//private:
+private:
 
 #ifdef __AVR__
 static const uint8_t num = 4; //makes big mem diff... 
