@@ -1,7 +1,6 @@
 #include "TrueNum.h"
 
 int TrueNum::delayTime = 8000;
-//boolean TrueNum::unitrig = false;
 
 TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID){
     this->user = user;
@@ -65,7 +64,7 @@ void TrueNum::getQuery(Client& inclient){
       { 
       doSpecialNum(temps[a], inclient);  
       spec = true; 
-      temps[a][0] = 0; //memset(temps[a], 0, len); 
+      temps[a][0] = 0; 
       }
      }     
 
@@ -106,12 +105,12 @@ void TrueNum::getQuery(Client& inclient){
       //handle if first slot is special num
       if( checkSpecialNum(temps[a])){
         doSpecialNum(temps[a], inclient); 
-        temps[a][0] = 0; //memset(temps[a], 0, len); 
+        temps[a][0] = 0; 
         }
 
       //null remaining entries
       for(uint8_t i = a+1; i < num; i++)
-       temps[i][0] = 0; //memset(temps[i], 0, len); 
+       temps[i][0] = 0; 
 
       //print queried nums
       Serial.println(); 
@@ -223,19 +222,21 @@ if (inclient.connect(baseUrl, 80)){
 
 void TrueNum::makeCall(Client& inClient){
   
+  static char callBuff[len];
+  
   for(uint8_t i = 0; i < num; i++){ 
      if(temps[i][0] != 0){
-
-        if(getCondition(temps[i]) == 0)
+      memcpy(callBuff, temps[i], len);
+        if(getCondition(callBuff) == 0)
         {            
-             replaceToken( temps[i], getVal(getToken(temps[i])) );    
+             replaceToken(callBuff, getVal(getToken(callBuff)));    
         } 
         else{ 
-             getConditionalStmt(temps[i]);           
+             getConditionalStmt(callBuff);           
            }
-        if(temps[i][0]!= 0)
+        if(callBuff[0]!= 0)
         {
-          callUrl(temps[i], inClient);         
+          callUrl(callBuff, inClient);         
         } 
        }
   }     
