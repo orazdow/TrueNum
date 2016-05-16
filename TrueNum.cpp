@@ -19,6 +19,11 @@ void TrueNum::setID(const char* ID){
     this->ID = ID;
 }
 
+void TrueNum::keepBool(boolean in){
+    this->keepboolnum = in;
+}
+
+
 boolean TrueNum::getReturnBool(){
   return rtnbool;
 }
@@ -60,12 +65,18 @@ void TrueNum::getQuery(Client& inclient){
      temps[a][x] = '\0';  
      x = 0;  
      spec = false;
-     if(checkSpecialNum(temps[a]))
-      { 
-      doSpecialNum(temps[a]);  
-      spec = true; 
-      temps[a][0] = 0; 
-      }
+    if(checkSpecialNum(temps[a]))
+    if(checkSpecialNum(temps[a]) > 2)
+    {
+    doSpecialNum(temps[a]); 
+    if(!keepboolnum){ 
+    temps[a][0] = 0; spec = true;}
+    }
+    else{
+        doSpecialNum(temps[a]); 
+        temps[a][0] = 0;
+        spec = true; 
+        }
      }     
 
       if(a < num-1){  
@@ -231,9 +242,14 @@ void TrueNum::makeCall(Client& inClient){
         {            
              replaceToken(callBuff, getVal(getToken(callBuff)));    
         } 
-        else{ 
-             getConditionalStmt(callBuff);           
-           }
+        else{
+            if(checkSpecialNum(callBuff)){
+              doSpecialNum(callBuff); 
+              callBuff[0] = 0; }
+              else{
+              getConditionalStmt(callBuff); 
+              }          
+            }
         if(callBuff[0]!= 0)
         {
           callUrl(callBuff, inClient);         
@@ -255,8 +271,13 @@ void TrueNum::makeCall(const char* in, Client& inClient){
           replaceToken( callBuff, getVal(getToken(callBuff)) );    
         } 
         else{
-            getConditionalStmt(callBuff);         
-        }
+            if(checkSpecialNum(callBuff)){
+              doSpecialNum(callBuff); 
+              callBuff[0] = 0; }
+              else{
+              getConditionalStmt(callBuff); 
+              }          
+            }
         if(callBuff[0] != 0)
         {
           callUrl(callBuff, inClient);         

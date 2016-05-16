@@ -11,6 +11,7 @@ public:
 TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID);
 TrueNum(const char* user,const char* pwd,const char* numSpace);
 void setID(const char* ID);
+void keepBool(boolean in);
 
 void getQuery(Client& inclient);
 void makeCall(Client& inClient);
@@ -48,6 +49,7 @@ const char* baseUrl  = "pub.truenumbers.com";
 static int delayTime; 
 boolean unitrig = false;
 boolean rtnbool;
+boolean keepboolnum = false;
 
 #ifndef __AVR__
    const char* urlleadin = "GET /Numberflow/API?auth=";
