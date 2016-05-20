@@ -15,24 +15,7 @@ Bridge.begin();
 Serial.begin(9600);
 while(!Serial); 
 //sketch will start when serial monitor is opened
-//myNum.getQuery(client);
-//myNum.getQuery(client);
-//myNum.setVal("$hello", 4.7);
-//Serial.println(myNum.getVal("$hello"));
-//myNum.setVal("$sensor-temp", mySensor.getTemperature());
-//myNum.setVal("$sensor-hum", mySensor.getHumidity() ); 
-//myNum.makeCall("temperature of myNiceRoom = $sensor-temp < 71 F",client);
-/*
-myNum.setVal("$sensor-temp", mySensor.getTemperature());
-myNum.setVal("$sensor-hum", mySensor.getHumidity() ); 
-myNum.getQuery(client);
-//myNum.makeCall(client);
-myNum.getQuery(client);
-//myNum.makeCall(client);
-myNum.getQuery(client);
-//myNum.makeCall(client);
-myNum.getQuery(client);
-//myNum.makeCall(client); */
+
 }
 
 void loop() {
