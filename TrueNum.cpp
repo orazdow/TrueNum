@@ -239,8 +239,9 @@ void TrueNum::makeCall(Client& inClient){
      if(temps[i][0] != 0){
       memcpy(callBuff, temps[i], len);
         if(getCondition(callBuff) == 0)
-        {            
-             replaceToken(callBuff, getVal(getToken(callBuff)));    
+        {        
+             replaceToken(callBuff, getVal(getToken(callBuff))); 
+            
         } 
         else{
             if(checkSpecialNum(callBuff)){
@@ -495,23 +496,47 @@ uint8_t TrueNum::valueStart(char* in){
    return s;
 }
 
+
+#ifdef __AVR__
+
 void TrueNum::replaceToken(char* in, float val){ 
-  char* p = strchr(strchr(in, '$'), ' ');
+  char* dollar = strchr(in, '$');
+  char* p = strchr(dollar, ' ');
   if(p){
-  String valstr = String(val);  
+  String valstr = String(val);
   uint8_t slen = strlen(in);
   uint8_t sublen = valstr.length();
-  uint8_t aftok = p-in;
-  uint8_t dollar = strchr(in, '$')-in;
-  uint8_t tklen = aftok - dollar;
+  uint8_t tklen = (p-in) - (dollar-in);
 
   if(slen+(sublen-tklen) < len){
-    memmove(in+aftok+(sublen-tklen), in+aftok, slen-aftok);
-    memcpy(in+dollar, valstr.c_str(), sublen);
+    memmove(p+(sublen-tklen), p, slen-(p-in));
+    memcpy(dollar, valstr.c_str(), sublen);
     in[slen+(sublen-tklen)] = '\0'; 
     }   
   }
 }
+
+#else
+
+void TrueNum::replaceToken(char* in, float val){ 
+  char* dollar = strchr(in, '$');
+  char* p = strchr(dollar, ' ');
+  if(p){
+  char sbuff[20];
+  sprintf(sbuff,"%i.%i",(int)val,abs((int)((val-(int)val)*100)));
+  uint8_t slen = strlen(in);
+  uint8_t sublen = strlen(sbuff);
+  uint8_t tklen = (p-in) - (dollar-in);
+
+  if(slen+(sublen-tklen) < len){
+    memmove(p+(sublen-tklen), p, slen-(p-in));
+    memcpy(dollar, sbuff, sublen);
+    in[slen+(sublen-tklen)] = '\0'; 
+    }   
+  }
+}
+
+#endif
 
 void TrueNum::replaceChar(char* in, char inchar, const char* outstr){
 char* p = strchr(in, inchar);

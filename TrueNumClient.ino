@@ -1,4 +1,4 @@
-#ifndef __AVR__
+//#ifndef __AVR__
 
 #include "TrueNum.h"
 #include "TestSensor.h"
@@ -89,8 +89,8 @@ void printWifiStatus() {
   Serial.print(rssi);
   Serial.println(" dBm");
 }
-
-#else
+/*
+//#else
 
 #include "TrueNum.h"
 #include "TestSensor.h"
@@ -136,6 +136,6 @@ if(myNum.getReturnBool()){
 }
 
 #endif
-
+*/
 
 
