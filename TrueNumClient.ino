@@ -48,7 +48,6 @@ while(!Serial);
   }
   Serial.println("Connected to wifi");
   printWifiStatus();
-//  myNum.keepBool(false);
 //myNum.getQuery(client);
 }
 

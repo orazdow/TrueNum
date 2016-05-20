@@ -1,5 +1,5 @@
 #include "TrueNum.h"
-//
+
 int TrueNum::delayTime = 8000;
 
 TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID){
@@ -18,11 +18,6 @@ TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace){
 void TrueNum::setID(const char* ID){
     this->ID = ID;
 }
-
-void TrueNum::keepBool(boolean in){
-    this->keepboolnum = in;
-}
-
 
 boolean TrueNum::getReturnBool(){
   return rtnbool;
@@ -65,18 +60,23 @@ void TrueNum::getQuery(Client& inclient){
      temps[a][x] = '\0';  
      x = 0;  
      spec = false;
-    if(checkSpecialNum(temps[a])){
-    if(checkSpecialNum(temps[a]) > 2)
-    {
-    if(!keepboolnum){ 
-    doSpecialNum(temps[a]); 
-    temps[a][0] = 0;  spec = true;} 
-    }
-    else{
+    #ifdef __AVR__
+       if(checkSpecialNum(temps[a]))
+        { 
+        doSpecialNum(temps[a]);  
+        spec = true; 
+        temps[a][0] = 0; 
+        }
+    #else
+      if(checkSpecialNum(temps[a])){
+      if(checkSpecialNum(temps[a]) < 3)
+      {
         doSpecialNum(temps[a]); 
         temps[a][0] = 0;
         spec = true; 
-        } }
+        } 
+      }
+    #endif
      }     
 
       if(a < num-1){  
@@ -240,16 +240,19 @@ void TrueNum::makeCall(Client& inClient){
       memcpy(callBuff, temps[i], len);
         if(getCondition(callBuff) == 0)
         {        
-             replaceToken(callBuff, getVal(getToken(callBuff))); 
-            
+         replaceToken(callBuff, getVal(getToken(callBuff)));            
         } 
         else{
+          #ifndef __AVR__
             if(checkSpecialNum(callBuff)){ 
               doSpecialNum(callBuff); 
               callBuff[0] = 0; }
               else{
               getConditionalStmt(callBuff); 
-              }          
+              }
+          #else
+              getConditionalStmt(callBuff);   
+          #endif              
             }
         if(callBuff[0]!= 0)
         {
@@ -269,15 +272,19 @@ void TrueNum::makeCall(const char* in, Client& inClient){
 
         if(getCondition(callBuff) == 0)
         {            
-          replaceToken( callBuff, getVal(getToken(callBuff)) );    
+         replaceToken( callBuff, getVal(getToken(callBuff)));    
         } 
         else{
+          #ifndef __AVR__
             if(checkSpecialNum(callBuff)){
               doSpecialNum(callBuff); 
               callBuff[0] = 0; }
               else{
               getConditionalStmt(callBuff); 
-              }          
+              } 
+          #else
+              getConditionalStmt(callBuff);   
+          #endif         
             }
         if(callBuff[0] != 0)
         {
