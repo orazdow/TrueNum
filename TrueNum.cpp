@@ -1,7 +1,5 @@
 #include "TrueNum.h"
 
-//const char* TrueNum::baseUrl = "pub.truenumbers.com";
-//String TrueNum::ID = "Na";
 int TrueNum::delayTime = 8000;
 
 TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace,const char* ID){
@@ -11,23 +9,44 @@ TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace,const cha
     this->ID = ID;
 }
 
+TrueNum::TrueNum(const char* user,const char* pwd,const char* numSpace){
+    this->user = user;
+    this->pwd = pwd;
+    this->numSpace = numSpace;
+}
+
+void TrueNum::setID(const char* ID){
+    this->ID = ID;
+}
+
 boolean TrueNum::getReturnBool(){
   return rtnbool;
 }
 
 void TrueNum::getQuery(Client& inclient){
  int a = -1; int x = 0; boolean spec = false;
-  if (inclient.connect(baseUrl, 80)){
-    
+  if (inclient.connect(baseUrl, 80)){   
+   
+   #ifdef __AVR__
     inclient.print(F("GET "));  
     inclient.print(F("/Numberflow/API?auth="));
     inclient.print(user); 
-    inclient.print(":"); 
+    inclient.print(F(":")); 
     inclient.print(pwd); 
     inclient.print(F("&ns=")); 
     inclient.print(numSpace); 
     inclient.print(F("&sto=1&string=notags&cmd=dashboard-search&qry=parameter:"));
-    inclient.print(ID);
+    inclient.print(ID);  
+   #else 
+    inclient.print(urlleadin);  
+    inclient.print(user); 
+    inclient.print(":"); 
+    inclient.print(pwd); 
+    inclient.print(nsparam); 
+    inclient.print(numSpace); 
+    inclient.print(queryParams);
+    inclient.print(ID); 
+   #endif 
     inclient.println(); 
     delay(500); 
   }else {
@@ -41,17 +60,28 @@ void TrueNum::getQuery(Client& inclient){
      temps[a][x] = '\0';  
      x = 0;  
      spec = false;
-     if(checkSpecialNum(temps[a]))
-      { 
-      doSpecialNum(temps[a], inclient);  
-      spec = true; 
-      temps[a][0] = 0; //memset(temps[a], 0, len); 
+    #ifdef __AVR__
+       if(checkSpecialNum(temps[a]))
+        { 
+        doSpecialNum(temps[a]);  
+        spec = true; 
+        temps[a][0] = 0; 
+        }
+    #else
+      if(checkSpecialNum(temps[a])){
+      if(checkSpecialNum(temps[a]) < 3)
+      {
+        doSpecialNum(temps[a]); 
+        temps[a][0] = 0;
+        spec = true; 
+        } 
       }
+    #endif
      }     
 
       if(a < num-1){  
       if(!spec){
-      a++;
+      a++; 
       }
       }else{
          Serial.println("\nlimit reached"); break;
@@ -72,22 +102,26 @@ void TrueNum::getQuery(Client& inclient){
       temps[a][x] = c; 
       if(x < len-1)
       x++; 
-     }
+     } 
 
-  }  
+  }       
       //remove json info from first num
       if(strstr(temps[0], "truenumbers:")) 
       memmove(temps[0],temps[0]+12,len-12);
 
       //handle if first slot is special num
       if( checkSpecialNum(temps[a])){
-        doSpecialNum(temps[a], inclient); 
-        temps[a][0] = 0; //memset(temps[a], 0, len); 
-        }
+        doSpecialNum(temps[a]); 
+        temps[a][0] = 0;}
 
       //null remaining entries
       for(uint8_t i = a+1; i < num; i++)
-       temps[i][0] = 0; //memset(temps[i], 0, len); 
+       temps[i][0] = 0; 
+
+      //call unibox
+      if(unitrig){
+      callUniBox(inclient);
+      unitrig = false;}
 
       //print queried nums
       Serial.println(); 
@@ -104,10 +138,16 @@ void TrueNum::callUrl(char* statement, Client& inclient){
     replaceChar(statement, '%', "%25");
     replaceChar(statement, ' ', "+");
  
+    #ifdef __AVR__
     Serial.println(F("calling:")); 
+    #else
+    Serial.println("calling:"); 
+    #endif
     Serial.println(statement); 
     
  if (inclient.connect(baseUrl, 80)){ 
+
+  #ifdef __AVR__
     inclient.print(F("GET "));  
     inclient.print(F("/Numberflow/API?auth=")); 
     inclient.print(user); 
@@ -117,7 +157,17 @@ void TrueNum::callUrl(char* statement, Client& inclient){
     inclient.print(numSpace); 
     inclient.print(F("&sto=1&cmd=send-tspeak&tspeak=")); 
     inclient.print(statement);
-    inclient.println(); 
+  #else
+    inclient.print(urlleadin);  
+    inclient.print(user); 
+    inclient.print(":"); 
+    inclient.print(pwd); 
+    inclient.print(nsparam); 
+    inclient.print(numSpace); 
+    inclient.print(callParams); 
+    inclient.print(statement);
+  #endif
+    inclient.println();
     delay(500);
   } else {
     Serial.println("connection failed");
@@ -130,9 +180,10 @@ void TrueNum::callUrl(char* statement, Client& inclient){
   
 }
 
-void TrueNum::callUniBox(Client& inclient){
+void TrueNum::callUniBox(Client& inclient){ 
    //tokens used, report interval
 if (inclient.connect(baseUrl, 80)){ 
+  #ifdef __AVR__
     inclient.print(F("GET "));  
     inclient.print(F("/Numberflow/API?auth=")); 
     inclient.print(user); 
@@ -145,14 +196,29 @@ if (inclient.connect(baseUrl, 80)){
     inclient.print(ID);
     inclient.print(F("+=+%22note%22//"));
     inclient.print(F("Tokens:+"));
-
+ #else
+    inclient.print(urlleadin);  
+    inclient.print(user); 
+    inclient.print(":"); 
+    inclient.print(pwd); 
+    inclient.print(nsparam); 
+    inclient.print(numSpace);
+    inclient.print(uniParams);
+    inclient.print(ID);
+    inclient.print(uniParams2);
+ #endif
+  
   for(uint8_t i = 0; i < num; i++){
     if(nodes[i].token != NULL){
     inclient.print(nodes[i].token);
     inclient.print('+');
       }
-    }   
+    }
+  #ifdef __AVR__     
+    inclient.print(F("+Interval:+"));
+  #else
     inclient.print("+Interval:+");
+  #endif
     float ds = delayTime / 1000;
     inclient.print(ds);   
     inclient.println(); 
@@ -162,28 +228,70 @@ if (inclient.connect(baseUrl, 80)){
     Serial.println("connection failed");
   } 
     //flush serial buffer
-    while(inclient.available()) { inclient.read(); }
+    while(inclient.available()) { inclient.read(); } 
 }
 
 void TrueNum::makeCall(Client& inClient){
   
+  static char callBuff[len];
+  
   for(uint8_t i = 0; i < num; i++){ 
      if(temps[i][0] != 0){
-
-        if(getCondition(temps[i]) == 0)
-        {            
-             replaceToken( temps[i], getVal(getToken(temps[i])) );    
+      memcpy(callBuff, temps[i], len);
+        if(getCondition(callBuff) == 0)
+        {        
+         replaceToken(callBuff, getVal(getToken(callBuff)));            
         } 
-        else{ 
-             getConditionalStmt(temps[i]);           
-           }
-        if(temps[i][0]!= 0)
+        else{
+          #ifndef __AVR__
+            if(checkSpecialNum(callBuff)){ 
+              doSpecialNum(callBuff); 
+              callBuff[0] = 0; }
+              else{
+              getConditionalStmt(callBuff); 
+              }
+          #else
+              getConditionalStmt(callBuff);   
+          #endif              
+            }
+        if(callBuff[0]!= 0)
         {
-          callUrl(temps[i], inClient);         
+          callUrl(callBuff, inClient);         
         } 
        }
   }     
         delay(delayTime);
+}
+
+void TrueNum::makeCall(const char* in, Client& inClient){
+
+     static char callBuff[len];
+     memcpy(callBuff, in, len);
+
+     if(callBuff[0] != 0){
+
+        if(getCondition(callBuff) == 0)
+        {            
+         replaceToken( callBuff, getVal(getToken(callBuff)));    
+        } 
+        else{
+          #ifndef __AVR__
+            if(checkSpecialNum(callBuff)){
+              doSpecialNum(callBuff); 
+              callBuff[0] = 0; }
+              else{
+              getConditionalStmt(callBuff); 
+              } 
+          #else
+              getConditionalStmt(callBuff);   
+          #endif         
+            }
+        if(callBuff[0] != 0)
+        {
+          callUrl(callBuff, inClient);         
+        } 
+       }  
+        delay(delayTime);       
 }
 
 void TrueNum::getConditionalStmt(char* in){
@@ -258,15 +366,18 @@ uint8_t TrueNum::checkSpecialNum(char* in){
   return rtn;
 }
 
-void TrueNum::doSpecialNum(char* in, Client& inClient){
+void TrueNum::doSpecialNum(char* in){
   
     uint8_t state = checkSpecialNum(in);
     
     if(state == 1){  
      if( strcmp(in, statusreq) != 0){
-      
+     #ifdef __AVR__ 
       Serial.println(F("\nsending status report...\n"));
-      callUniBox(inClient);
+     #else
+     Serial.println("\nsending status report...\n");
+     #endif
+      unitrig = true;
       memcpy(statusreq, in, len);
       
        }   
@@ -392,23 +503,47 @@ uint8_t TrueNum::valueStart(char* in){
    return s;
 }
 
+
+#ifdef __AVR__
+
 void TrueNum::replaceToken(char* in, float val){ 
-  char* p = strchr(strchr(in, '$'), ' ');
+  char* dollar = strchr(in, '$');
+  char* p = strchr(dollar, ' ');
   if(p){
-  String valstr = String(val);  
+  String valstr = String(val);
   uint8_t slen = strlen(in);
   uint8_t sublen = valstr.length();
-  uint8_t aftok = p-in;
-  uint8_t dollar = strchr(in, '$')-in;
-  uint8_t tklen = aftok - dollar;
+  uint8_t tklen = (p-in) - (dollar-in);
 
   if(slen+(sublen-tklen) < len){
-    memmove(in+aftok+(sublen-tklen), in+aftok, slen-aftok);
-    memcpy(in+dollar, valstr.c_str(), sublen);
+    memmove(p+(sublen-tklen), p, slen-(p-in));
+    memcpy(dollar, valstr.c_str(), sublen);
     in[slen+(sublen-tklen)] = '\0'; 
     }   
   }
 }
+
+#else
+
+void TrueNum::replaceToken(char* in, float val){ 
+  char* dollar = strchr(in, '$');
+  char* p = strchr(dollar, ' ');
+  if(p){
+  char sbuff[20];
+  sprintf(sbuff,"%i.%i",(int)val,abs((int)((val-(int)val)*100)));
+  uint8_t slen = strlen(in);
+  uint8_t sublen = strlen(sbuff);
+  uint8_t tklen = (p-in) - (dollar-in);
+
+  if(slen+(sublen-tklen) < len){
+    memmove(p+(sublen-tklen), p, slen-(p-in));
+    memcpy(dollar, sbuff, sublen);
+    in[slen+(sublen-tklen)] = '\0'; 
+    }   
+  }
+}
+
+#endif
 
 void TrueNum::replaceChar(char* in, char inchar, const char* outstr){
 char* p = strchr(in, inchar);
