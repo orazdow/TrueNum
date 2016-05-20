@@ -49,7 +49,11 @@ const char* baseUrl  = "pub.truenumbers.com";
 static int delayTime; 
 boolean unitrig = false;
 boolean rtnbool;
+#ifdef __AVR__
 boolean keepboolnum = false;
+#else
+boolean keepboolnum = true;
+#endif
 
 #ifndef __AVR__
    const char* urlleadin = "GET /Numberflow/API?auth=";

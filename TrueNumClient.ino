@@ -48,11 +48,14 @@ while(!Serial);
   }
   Serial.println("Connected to wifi");
   printWifiStatus();
-  
+//  myNum.keepBool(false);
 //myNum.getQuery(client);
 }
 
 void loop() {
+  if(myNum.getReturnBool()){
+  digitalWrite(13,HIGH);
+} else { digitalWrite(13,LOW); }
   
 //myNum.setVal("$sensor-temp", mySensor.getTemperature());
 //myNum.setVal("$sensor-hum", mySensor.getHumidity() ); 
@@ -66,10 +69,6 @@ myNum.getQuery(client);
 myNum.makeCall(client);
 
 //myNum.makeCall( "temperature of myArduino = $DHT-temp < 70 F", client );
-
-if(myNum.getReturnBool()){
-  digitalWrite(13,HIGH);
-} else { digitalWrite(13,LOW);}
 
 }
 

@@ -65,18 +65,18 @@ void TrueNum::getQuery(Client& inclient){
      temps[a][x] = '\0';  
      x = 0;  
      spec = false;
-    if(checkSpecialNum(temps[a]))
+    if(checkSpecialNum(temps[a])){
     if(checkSpecialNum(temps[a]) > 2)
     {
-    doSpecialNum(temps[a]); 
     if(!keepboolnum){ 
-    temps[a][0] = 0; spec = true;}
+    doSpecialNum(temps[a]); 
+    temps[a][0] = 0;  spec = true;} 
     }
     else{
         doSpecialNum(temps[a]); 
         temps[a][0] = 0;
         spec = true; 
-        }
+        } }
      }     
 
       if(a < num-1){  
@@ -244,7 +244,7 @@ void TrueNum::makeCall(Client& inClient){
             
         } 
         else{
-            if(checkSpecialNum(callBuff)){
+            if(checkSpecialNum(callBuff)){ 
               doSpecialNum(callBuff); 
               callBuff[0] = 0; }
               else{
