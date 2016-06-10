@@ -29,8 +29,8 @@
 TrueNum myNum("test@adomain.abc", "condor", "public-iot", "arduino1");
 
 //Enter your WIFi SSID and password here:
-char ssid[] = "Samsung Galaxy S6 1532";     
-char pass[] = "randal99"; 
+char ssid[] = "Your Wireless Network";     
+char pass[] = "Your Password"; 
 
 TestSensor mySensor;
 
