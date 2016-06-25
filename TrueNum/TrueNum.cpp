@@ -503,9 +503,6 @@ uint8_t TrueNum::valueStart(char* in){
    return s;
 }
 
-
-#ifdef __AVR__
-
 void TrueNum::replaceToken(char* in, float val){ 
   char* dollar = strchr(in, '$');
   char* p = strchr(dollar, ' ');
@@ -522,28 +519,6 @@ void TrueNum::replaceToken(char* in, float val){
     }   
   }
 }
-
-#else
-
-void TrueNum::replaceToken(char* in, float val){ 
-  char* dollar = strchr(in, '$');
-  char* p = strchr(dollar, ' ');
-  if(p){
-  char sbuff[20];
-  sprintf(sbuff,"%i.%i",(int)val,abs((int)((val-(int)val)*100)));
-  uint8_t slen = strlen(in);
-  uint8_t sublen = strlen(sbuff);
-  uint8_t tklen = (p-in) - (dollar-in);
-
-  if(slen+(sublen-tklen) < len){
-    memmove(p+(sublen-tklen), p, slen-(p-in));
-    memcpy(dollar, sbuff, sublen);
-    in[slen+(sublen-tklen)] = '\0'; 
-    }   
-  }
-}
-
-#endif
 
 void TrueNum::replaceChar(char* in, char inchar, const char* outstr){
 char* p = strchr(in, inchar);
