@@ -448,7 +448,7 @@ if(!found){
   nodes[i].token = (char*)intoken;
   nodes[i].value = invalue;
   nodes[i].set = true;
-  } else{ //error }
+  } else{ //error } 
     }
   }  
 }
