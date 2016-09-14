@@ -1,6 +1,12 @@
 # TrueNumber IoT Client
 <br>
 
+**A library for arduino-compatibale boards to create data for ioT applications using TrueNumbers,**
+
+**and for for remote configuration.**
+
+<br>
+
 **To install this library:**
 
 -Download .zip
